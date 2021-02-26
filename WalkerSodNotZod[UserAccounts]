@@ -1,0 +1,128 @@
+/* AUTHOR: Jonathan Walker
+ * COURSE: CPT187
+ * PURPOSE: This is a customer account system for a retail store.
+ * STARTDATE: 02/16/21
+ */
+
+package edu.cpt187.walker.exercise6;
+
+import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class UserAccounts
+{
+	// class constants
+	private final int NOT_FOUND = -1;
+	private final int RESET_VALUE = 0;
+	private final int MAXIMUM_RECORDS = 50;
+
+	// attributes
+	private String[] userNames = new String[MAXIMUM_RECORDS];
+	private String[] passwords = new String[MAXIMUM_RECORDS];
+	private String masterFileName = "";
+	private int recordCount = 0;
+	private int searchedIndex = 0;
+
+	// constructor
+	public UserAccounts(String borrowedFileName)
+	{
+		masterFileName = borrowedFileName;
+	}// END constructor
+
+	// behaviors
+	public void setUserAccountArrays()
+	{
+		try
+		{
+			Scanner infile = new Scanner(new FileInputStream(masterFileName));
+			recordCount = RESET_VALUE;
+			while (infile.hasNext() == true && recordCount < MAXIMUM_RECORDS)// load records from file
+			{
+				userNames[recordCount] = infile.next();
+				passwords[recordCount] = infile.next();
+				recordCount++;
+			}// END while
+		}// END try
+		catch (IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}// END catch
+	}// END setUserAccountArrays
+
+	public void setSearchedIndex(String borrowedUserName)
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+	}// END setSearchedIndex
+
+	public void setSearchedIndex(String borrowedUserName, String borrowedPassword)// overloaded
+	{
+		searchedIndex = getSeqSearch(borrowedUserName);
+		if (searchedIndex >= RESET_VALUE && getPasswordMatch(borrowedPassword) == false)
+		{
+			searchedIndex = NOT_FOUND;
+		}// END if
+	}// END setSearchedIndex overloaded
+
+	public void setWriteOneRecord(String borrowedUserName, String borrowedPassword)// write a new user account to MasterUserFile.dat
+	{
+		try
+		{
+			PrintWriter filePW = new PrintWriter(new FileWriter(masterFileName, true));
+			filePW.printf("%n%s\t%s", borrowedUserName, borrowedPassword);
+			filePW.close();
+			recordCount++;
+		}// END try
+		catch (IOException ex)
+		{
+			recordCount = NOT_FOUND;
+		}// END try
+	}// END setWriteOneRecord
+
+	public int getSeqSearch(String borrowedBorrowedUserName)
+	{
+		int localIndex = 0;
+		int localFound = NOT_FOUND;
+		while (localIndex < recordCount)
+		{
+			if (borrowedBorrowedUserName.equalsIgnoreCase(userNames[localIndex]))
+			{
+				localFound = localIndex;
+				localIndex = recordCount;
+			}// END if
+			else
+			{
+				localIndex++;
+			}// END else
+		}// END while
+		return localFound;
+	}// END getSeqSearch
+
+	public boolean getPasswordMatch(String borrowedBorrowedPassword)
+	{
+		return borrowedBorrowedPassword.equals(passwords[searchedIndex]);
+	}// END getPasswordMatch
+
+	public String getFileName()
+	{
+		return masterFileName;
+	}// END getFileName
+
+	public int getMaximumRecords()
+	{
+		return MAXIMUM_RECORDS;
+	}// END getMaximumRecords
+
+	public int getRecordCount()
+	{
+		return recordCount;
+	}// END getRecordCount
+
+	public int getSearchedIndex()
+	{
+		return searchedIndex;
+	}// END getSearchedIndex
+
+}// END UserAccounts class
