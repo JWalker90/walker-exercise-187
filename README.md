@@ -1,0 +1,2 @@
+# walker-exercise-187
+This is a retail store point of sale program that loads an inventory list from a file, calculates transactions and displays order reports, collects statistics which are used to generate a final sales report upon quitting, and keeps track of item stock levels. Utilizes a user account system. Also saves information pertaining to individual transactions and user accounts in two master files.
